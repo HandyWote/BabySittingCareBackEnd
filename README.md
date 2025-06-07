@@ -119,14 +119,14 @@ FLASK_ENV=development
 python app.py
 ```
 
-服务将在 `http://localhost:5000` 启动
+服务将在 `http://localhost:5010` 启动
 
 ### 5. 验证安装
 
 访问以下端点验证服务正常运行：
 
-- 健康检查: `GET http://localhost:5000/api/health`
-- 服务状态: `GET http://localhost:5000/`
+- 健康检查: `GET http://localhost:5010/api/health`
+- 服务状态: `GET http://localhost:5010/`
 
 ## 🐳 Docker部署
 
@@ -140,10 +140,10 @@ docker build -t babysitting-backend .
 
 ```bash
 # 基础运行
-docker run -p 5000:5000 babysitting-backend
+docker run -p 5010:5000 babysitting-backend
 
 # 带环境变量运行
-docker run -p 5000:5000 \
+docker run -p 5010:5000 \
   -e SECRET_KEY=your-secret-key \
   -e JWT_SECRET_KEY=your-jwt-secret \
   -e WECHAT_APP_ID=your-app-id \
@@ -162,7 +162,7 @@ services:
   backend:
     build: .
     ports:
-      - "5000:5000"
+      - "5010:5000"
     environment:
       - SECRET_KEY=your-secret-key-here
       - JWT_SECRET_KEY=your-jwt-secret-key
@@ -244,7 +244,7 @@ server {
     server_name your-domain.com;  # 替换为你的域名
 
     location / {
-        proxy_pass http://localhost:5000;
+        proxy_pass http://localhost:5010;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -276,7 +276,7 @@ sudo certbot --nginx -d your-domain.com
 
 1. **创建ECS实例**
    - 选择Ubuntu 20.04 LTS
-   - 配置安全组开放80、443、5000端口
+   - 配置安全组开放80、443、5010端口
 
 2. **部署步骤**
    ```bash
@@ -295,7 +295,7 @@ sudo certbot --nginx -d your-domain.com
 2. **快速部署**
    ```bash
    # 直接运行容器
-   docker run -d -p 5000:5000 \
+   docker run -d -p 5010:5000 \
      --name babysitting-backend \
      -e SECRET_KEY=your-secret \
      babysitting-backend
@@ -414,19 +414,19 @@ CORS_ORIGINS = ['http://localhost:3000', 'https://your-domain.com']
 
 ### Q5: 端口占用
 
-**问题**: 5000端口被占用
+**问题**: 5010端口被占用
 
 **解决**: 更换端口或停止占用进程
 
 ```bash
 # 查看端口占用
-netstat -ano | findstr :5000
+netstat -ano | findstr :5010
 
 # 停止进程
 taskkill /PID <PID> /F
 
 # 或使用其他端口
-docker run -p 8000:5000 babysitting-backend
+docker run -p 8001:5000 babysitting-backend
 ```
 
 ## 🔧 维护指南
