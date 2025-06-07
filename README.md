@@ -70,7 +70,7 @@
 
 ```bash
 git clone <repository-url>
-cd babysittingCare/BackEnd
+cd babysittingCareBackEnd
 ```
 
 ## 💻 本地开发
