@@ -14,8 +14,7 @@ def get_appointments(current_user):
     """获取用户的预约列表"""
     try:
         status = request.args.get('status', 'all')  # all, pending, completed
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 10, type=int)
+        show_loading = request.args.get('showLoading', 'false').lower() == 'true'
         
         # 构建查询
         query = Appointment.query.filter_by(user_openid=current_user.openid)
@@ -27,16 +26,12 @@ def get_appointments(current_user):
         # 按预约日期排序
         query = query.order_by(Appointment.appointment_date.asc())
         
-        # 分页
-        appointments = query.paginate(
-            page=page, 
-            per_page=per_page, 
-            error_out=False
-        )
+        # 获取所有符合条件的预约
+        appointments = query.all()
         
         # 获取预约详情（包含儿童信息）
         appointment_list = []
-        for appointment in appointments.items:
+        for appointment in appointments:
             appointment_dict = appointment.to_dict()
             # 获取关联的儿童信息
             child = Child.query.get(appointment.child_id)
@@ -50,21 +45,16 @@ def get_appointments(current_user):
         
         return jsonify({
             'success': True,
-            'appointments': appointment_list,
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': appointments.total,
-                'pages': appointments.pages,
-                'has_next': appointments.has_next,
-                'has_prev': appointments.has_prev
-            }
+            'appointments': appointment_list
         })
         
     except Exception as e:
+        error_msg = f'同步预约信息失败: {str(e)}'
+        if show_loading:
+            error_msg = '同步预约信息失败，请稍后重试'
         return jsonify({
             'success': False,
-            'message': f'获取预约列表失败: {str(e)}'
+            'message': error_msg
         }), 500
 
 @appointment_bp.route('/addAppointment', methods=['POST'])

@@ -154,9 +154,10 @@ python app.py
   Authorization: Bearer {{token}}
   ```
 - **查询参数** (可选):
-  - `page`: 页码
-  - `per_page`: 每页数量
-  - `status`: 状态筛选 (pending/completed/cancelled)
+  - `page`: 页码 (整数，从1开始，默认1)
+  - `per_page`: 每页数量 (整数，默认10，最大100)
+  - `status`: 状态筛选 (all/pending/completed，默认all)
+  - `showLoading`: 是否显示加载提示 (true/false，默认false)
 
 #### 4.2 添加预约
 - **方法**: POST
